@@ -6,6 +6,8 @@
 #include <SDL_opengl.h>
 #include <string>
 #include <iostream>
+
+
 class Window
 {
 public:

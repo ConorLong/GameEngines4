@@ -1,5 +1,5 @@
 #include "Window.h"
-
+#include "Debug.h"
 Window::Window() : window (nullptr), context(nullptr)
 {
 
@@ -13,7 +13,7 @@ Window::~Window()
 bool Window::OnCreate(std::string name, int width, int height)
 {
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-	std::cout << "Failed to init SDL" << std::endl;
+		Debug::FatalError("Failed to init SDL", __FILE__, __LINE__);
 	return false;
 	}
 	
@@ -28,7 +28,7 @@ bool Window::OnCreate(std::string name, int width, int height)
 							height,
 							SDL_WINDOW_OPENGL);
 	if (!window) {
-		std::cout << "failed to create window" << std::endl;
+		Debug::FatalError("failed to create window", __FILE__, __LINE__);
 		return false;
 	}
 
@@ -37,7 +37,7 @@ bool Window::OnCreate(std::string name, int width, int height)
 
 	GLenum err = glewInit();
 	if (err != GLEW_OK) {
-		std::cout << "failed to init GLEW" << std::endl;
+		Debug::FatalError("failed to init GLEW", __FILE__, __LINE__);
 		return false;
 	}
 
