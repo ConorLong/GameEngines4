@@ -1,4 +1,6 @@
-﻿  Game1.cpp
+﻿  EngineCore.cpp
+  Game1.cpp
+  GameScene.cpp
   StartScene.cpp
   Main.cpp
   Generating Code...
