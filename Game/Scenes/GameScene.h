@@ -1,7 +1,8 @@
 #ifndef GAMESCENE_H
 #define GAMESCENE_H
 
-#include "Scene.h"
+#include "../../Engine/Core/EngineCore.h"
+
 class GameScene: public Scene
 {
 public:
@@ -11,5 +12,8 @@ public:
 	bool OnCreate() override;
 	void Update(const float deltaTime) override;
 	void Render() override;
+
+private:
+	GameObject* shape;
 };
 #endif

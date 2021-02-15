@@ -7,6 +7,8 @@
 #include "Debug.h"
 #include "GameInterface.h"
 #include "../../Game/Scenes/Scene.h"
+
+#include "../Rendering/GameObject.h"
 class EngineCore
 {
 public:
