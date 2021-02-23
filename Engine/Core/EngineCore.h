@@ -9,6 +9,8 @@
 #include "../../Game/Scenes/Scene.h"
 
 #include "../Rendering/GameObject.h"
+
+#include "../Graphics/ShaderHandler.h"
 class EngineCore
 {
 public:

@@ -1,5 +1,6 @@
 #include "EngineCore.h"
 
+
  std::unique_ptr<EngineCore> EngineCore::s_engine = nullptr;
 
 EngineCore::EngineCore() : window(nullptr), isRunning(false), fps(60), gInterface(nullptr), currentScene(0)
@@ -35,6 +36,8 @@ bool EngineCore::OnCreate(std::string name, int width, int height)
 		
 		return isRunning = false;
 	}
+
+	ShaderHandler::GetInstance()->CreateProgram("colourShader", "Engine/Shaders/ColourVertexShader.glsl", "Engine/Shaders/ColourFragmentShader.glsl");
 
 	if (gInterface != nullptr) {
 		if (!gInterface->OnCreate()) {
@@ -103,6 +106,7 @@ void EngineCore::Render()
 
 void EngineCore::OnDestroy()
 {
+	ShaderHandler::GetInstance()->OnDestroy();
 	delete gInterface;
 	gInterface = nullptr;
 	delete window;

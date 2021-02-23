@@ -1,4 +1,4 @@
-#ifndef  GAMEINTERFACE_H
+#ifndef GAMEINTERFACE_H
 #define GAMEINTERFACE_H
 class GameInterface 
 {

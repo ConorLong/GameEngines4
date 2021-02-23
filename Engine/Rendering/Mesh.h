@@ -16,13 +16,15 @@ class Mesh
 {
 public: 
 	Mesh(std::vector<Vertex>& vertexList);
+	Mesh(std::vector<Vertex>& vertList, std::vector<GLuint>& indices);
 	~Mesh();
 
 	void Render();
 
 private:
 	void GenerateBuffers();
-	GLuint vao, vbo;
+	void GenerateBuffers(std::vector<GLuint>& indices);
+	GLuint vao, vbo, ebo;
 	std::vector<Vertex> vertexList;
 };
 #endif
