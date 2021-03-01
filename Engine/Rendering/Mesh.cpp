@@ -1,8 +1,9 @@
 #include "Mesh.h"
 
-Mesh::Mesh(std::vector<Vertex>& vertList) : vao(0), vbo(0), ebo(0), vertexList(std::vector<Vertex>())
+Mesh::Mesh(std::vector<Vertex>& vertList, GLuint shaderProgram) : vao(0), vbo(0), ebo(0), vertexList(std::vector<Vertex>()), shaderProgram(0), modelLoc(0), viewLoc(0), projectionLoc(0)
 {
 	vertexList = vertList;
+	this->shaderProgram = shaderProgram;
 	GenerateBuffers();
 }
 
@@ -20,15 +21,17 @@ Mesh::~Mesh()
 	vertexList.clear();
 }
 
-void Mesh::Render()
+void Mesh::Render(Camera* camera, glm::mat4 transform)
 {
 	glBindVertexArray(vao);
-	if (ebo != NULL) {
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-	} else {
-		glDrawArrays(GL_TRIANGLES, 0, vertexList.size());
-	}
+	glEnable(GL_DEPTH_TEST);
+
+	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(transform));
+	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(camera->GetView()));
+	glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(camera->GetPerspective()));
+
+    glDrawArrays(GL_TRIANGLES, 0, vertexList.size());
+
 	glBindVertexArray(0);
 }
 
@@ -54,6 +57,10 @@ void Mesh::GenerateBuffers()
 
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	modelLoc = glGetUniformLocation(shaderProgram, "model");
+	viewLoc = glGetUniformLocation(shaderProgram, "view");
+	projectionLoc = glGetUniformLocation(shaderProgram, "projection");
 }
 
 void Mesh::GenerateBuffers(std::vector<GLuint>& indices)

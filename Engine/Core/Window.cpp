@@ -1,8 +1,9 @@
 #include "Window.h"
 #include "Debug.h"
-Window::Window() : window (nullptr), context(nullptr)
+Window::Window() : window (nullptr), context(nullptr), width(0.0f), height(0.0f)
 {
-
+	width = 0;
+	height = 0;
 }
 
 Window::~Window()
@@ -43,6 +44,8 @@ bool Window::OnCreate(std::string name, int width, int height)
 
 	glEnable(GL_DEPTH_TEST);
 	std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
+
+	glViewport(0, 0, this->width, this->height);
 	return true;
 }
 
@@ -53,12 +56,12 @@ void Window::OnDestroy()
 	window = nullptr;
 }
 
-inline int Window::GetWidth() const
+ int Window::GetWidth() const
 {
 	return width;
 }
 
-inline int Window::GetHeight() const
+ int Window::GetHeight() const
 {
 	return height;
 }

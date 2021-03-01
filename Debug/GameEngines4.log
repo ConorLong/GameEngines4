@@ -1,2 +1,11 @@
-﻿  Mesh.cpp
+﻿  EngineCore.cpp
+  Window.cpp
+C:\Users\Conor\source\repos\GameEngines4\GameEngines4\Engine\Core\Window.cpp(3,61): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\Conor\source\repos\GameEngines4\GameEngines4\Engine\Core\Window.cpp(3,75): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+  Camera.cpp
+  Game1.cpp
+  GameScene.cpp
+  StartScene.cpp
+  Main.cpp
+  Generating Code...
   GameEngines4.vcxproj -> C:\Users\Conor\source\repos\GameEngines4\Debug\GameEngines4.exe

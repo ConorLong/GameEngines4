@@ -3,7 +3,7 @@
 
  std::unique_ptr<EngineCore> EngineCore::s_engine = nullptr;
 
-EngineCore::EngineCore() : window(nullptr), isRunning(false), fps(60), gInterface(nullptr), currentScene(0)
+EngineCore::EngineCore() : window(nullptr), isRunning(false), fps(60), gInterface(nullptr), currentScene(0), camera(nullptr)
 {
 
 }
@@ -24,6 +24,11 @@ EngineCore::~EngineCore()
  void EngineCore::SetCurrentScene(int sceneNum)
  {
 	 currentScene = sceneNum;
+ }
+
+ void EngineCore::SetCamera(Camera* camera)
+ {
+	 this->camera = camera;
  }
 
 bool EngineCore::OnCreate(std::string name, int width, int height)
@@ -69,6 +74,16 @@ void EngineCore::Exit()
 	isRunning = false;
 }
 
+float EngineCore::GetScreenWidth() const
+{
+	return static_cast<float>(window->GetWidth());
+}
+
+float EngineCore::GetScreenHeight() const
+{
+	return static_cast<float>(window->GetHeight());
+}
+
 
 void EngineCore::SetGameInterface(GameInterface* interface) 
 {
@@ -85,17 +100,22 @@ int EngineCore::GetCurrentScene() const
 	return currentScene;
 }
 
+Camera* EngineCore::GetCamera() const
+{
+	return camera;
+}
+
 void EngineCore::Update(const float deltaTime)
 {
 	if (gInterface != nullptr) {
 		gInterface->Update(deltaTime);
-		std::cout << deltaTime << std::endl;
+	
 	}
 }
 
 void EngineCore::Render()
 {
-	glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	if (gInterface != nullptr) {
 		gInterface->Render();
@@ -109,8 +129,13 @@ void EngineCore::OnDestroy()
 	ShaderHandler::GetInstance()->OnDestroy();
 	delete gInterface;
 	gInterface = nullptr;
+
+	delete camera;
+	camera = nullptr;
+
 	delete window;
 	window = nullptr;
+
 	SDL_Quit();
 	exit(0);
 }

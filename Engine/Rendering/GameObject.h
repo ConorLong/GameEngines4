@@ -8,7 +8,7 @@ public:
 	GameObject(Model* m);
 	~GameObject();
 
-	void Render();
+	void Render(Camera* camera);
 
 private:
 	Model* model;

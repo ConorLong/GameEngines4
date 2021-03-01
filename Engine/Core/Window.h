@@ -16,8 +16,8 @@ public:
 
 	bool OnCreate(std::string name, int width, int height);
 	void OnDestroy();
-	inline int GetWidth() const;
-	inline int GetHeight() const;
+	int GetWidth() const;
+	int GetHeight() const;
 	SDL_Window* GetWindow() const;
 
 
