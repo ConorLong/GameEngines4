@@ -3,10 +3,11 @@ in vec3 Normal;
 in vec2 TexCoords;
 in vec3 Colour;
 
+uniform sampler2D inputTexture;
+
 out vec4 fColour;
 
 void main()
 {
-
-fColour = vec4(Colour, 1.0f); 
+	fColour = texture(inputTexture, TexCoords);
 }

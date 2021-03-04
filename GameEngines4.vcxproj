@@ -141,6 +141,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\Rendering\Shapes\Cube.cpp" />
     <ClCompile Include="Engine\Rendering\Camera.cpp" />
     <ClCompile Include="Engine\Core\Debug.cpp" />
     <ClCompile Include="Engine\Core\EngineCore.cpp" />
@@ -156,8 +157,10 @@
     <ClCompile Include="Engine\Rendering\Mesh.cpp" />
     <ClCompile Include="Engine\Rendering\Model.cpp" />
     <ClCompile Include="Engine\Graphics\ShaderHandler.cpp" />
+    <ClCompile Include="Engine\Graphics\TextureHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\Rendering\Shapes\Cube.h" />
     <ClInclude Include="Engine\Rendering\Camera.h" />
     <ClInclude Include="Engine\Core\Debug.h" />
     <ClInclude Include="Engine\Core\EngineCore.h" />
@@ -173,10 +176,13 @@
     <ClInclude Include="Engine\Rendering\Mesh.h" />
     <ClInclude Include="Engine\Rendering\Model.h" />
     <ClInclude Include="Engine\Graphics\ShaderHandler.h" />
+    <ClInclude Include="Engine\Graphics\TextureHandler.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Engine\Shaders\ColourFragmentShader.glsl" />
     <None Include="Engine\Shaders\ColourVertexShader.glsl" />
+    <None Include="Engine\Shaders\FragmentShader.glsl" />
+    <None Include="Engine\Shaders\VertexShader.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -13,6 +13,8 @@
 #include "../Graphics/ShaderHandler.h"
 
 #include "../Rendering/Camera.h"
+
+#include "../Graphics/TextureHandler.h"
 class EngineCore
 {
 public:
