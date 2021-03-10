@@ -14,6 +14,7 @@ public:
 	void Render() override;
 
 private:
+	LightSource* light1;
 	GameObject* shape;
 	Model* model;
 	Mesh* cubeMesh;

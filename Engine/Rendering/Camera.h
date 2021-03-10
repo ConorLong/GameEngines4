@@ -27,7 +27,6 @@ public:
 private:
 
 	void UpdateCameraVector();
-	std::vector<LightSource*> lights;
 	glm::vec3 position;
 	glm::mat4 perspective, orthographic, view;
 	float fov;
@@ -35,5 +34,7 @@ private:
 	float nearPlane, farPlane;
 	glm::vec3 forward, up, right, worldUp;
 
+	std::vector<LightSource*> lights;
+	LightSource* light1 = nullptr;
 };
 #endif

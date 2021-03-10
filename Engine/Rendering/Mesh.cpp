@@ -36,6 +36,7 @@ void Mesh::Render(Camera* camera, glm::mat4 transform)
 		LightSource* lights = camera->GetLightSources()[0];
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(camera->GetView()));
 		glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(camera->GetPerspective()));
+		glUniform3fv(viewPos, 1, glm::value_ptr(camera->GetPosition()));
 		glUniform3fv(light.lightPos, 1, glm::value_ptr(lights[0].GetPos()));
 	    glUniform3fv(light.colour, 1, glm::value_ptr(lights[0].GetColour()));
 		glUniform1f(light.ambi, lights[0].GetAmb());
@@ -51,20 +52,7 @@ void Mesh::Render(Camera* camera, glm::mat4 transform)
 
 		glBindVertexArray(0);
 
-		//int total = -1;
-		//glGetProgramiv(shaderProgram, GL_ACTIVE_UNIFORMS, &total);
-		//for (int i = 0; i < total; ++i) {
-		//	int name_len = -1, num = -1;
-		//	GLenum type = GL_ZERO;
-		//	char name[100];
-		//	glGetActiveUniform(shaderProgram, GLuint(i), sizeof(name) - 1,
-		//		&name_len, &num, &type, name);
-		//	name[name_len] = 0;
-		//	GLuint location = glGetUniformLocation(shaderProgram, name);
-		//
-		//	printf("Uniform #%d Type: %u Name: %s\n", i, type, name);
-		//}
-
+	
 }
 
 void Mesh::SetRenderOption(enum RenderOptions option)
@@ -116,8 +104,20 @@ void Mesh::GenerateBuffers()
 	light.spec = glGetUniformLocation(shaderProgram, "light.specular");
 	light.colour = glGetUniformLocation(shaderProgram, "light.colour");
 
-	int location = textureLoc;
-	std::cout << location << std::endl;
+	int total = -1;
+	glGetProgramiv(shaderProgram, GL_ACTIVE_UNIFORMS, &total);
+	for (int i = 0; i < total; ++i) {
+		int name_len = -1, num = -1;
+		GLenum type = GL_ZERO;
+		char name[100];
+		glGetActiveUniform(shaderProgram, GLuint(i), sizeof(name) - 1,
+			&name_len, &num, &type, name);
+		name[name_len] = 0;
+		GLuint location = glGetUniformLocation(shaderProgram, name);
+
+		printf("Uniform #%d Type: %u Name: %s\n", i, type, name);
+	}
+
 }
 
 void Mesh::GenerateBuffers(std::vector<GLuint>& indices)
