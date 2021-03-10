@@ -1,6 +1,7 @@
 #include "Mesh.h"
 #include"../Core/Debug.h"
 #include<iostream>
+#include<string>
 Mesh::Mesh(std::vector<Vertex>& vertList, GLuint textureID, GLuint shaderProgram) : vao(0), vbo(0), ebo(0), vertexList(std::vector<Vertex>()), shaderProgram(0), modelLoc(0), viewLoc(0), projectionLoc(0),textureLoc(0), options(RenderOptions::DEFAULT)
 {
 	vertexList = vertList;
@@ -50,7 +51,19 @@ void Mesh::Render(Camera* camera, glm::mat4 transform)
 
 		glBindVertexArray(0);
 
-
+		//int total = -1;
+		//glGetProgramiv(shaderProgram, GL_ACTIVE_UNIFORMS, &total);
+		//for (int i = 0; i < total; ++i) {
+		//	int name_len = -1, num = -1;
+		//	GLenum type = GL_ZERO;
+		//	char name[100];
+		//	glGetActiveUniform(shaderProgram, GLuint(i), sizeof(name) - 1,
+		//		&name_len, &num, &type, name);
+		//	name[name_len] = 0;
+		//	GLuint location = glGetUniformLocation(shaderProgram, name);
+		//
+		//	printf("Uniform #%d Type: %u Name: %s\n", i, type, name);
+		//}
 
 }
 
