@@ -21,19 +21,27 @@ GameScene::~GameScene()
 bool GameScene::OnCreate()
 {
 	Debug::Info("Game scene created" , __FILE__, __LINE__);
-
+	
 	EngineCore::GetInstance()->SetCamera(new Camera());
+	EngineCore::GetInstance()->GetCamera()->AddLightSource(new LightSource(glm::vec3(0.0f, 0.0f, 2.0f), glm::vec3(1.0f, 1.0f, 1.0f), 0.1f, 0.5f, 0.5f));
 	EngineCore::GetInstance()->GetCamera()->SetPosition(glm::vec3(0.0f, 0.0f, 4.0f));
 
-	//TextureHandler::GetInstance()->CreateTexture("CheckerBoardTexture", "./Resources/Images/CheckerboardTexture.png");
+#pragma region Textures
 	TextureHandler::GetInstance()->CreateTexture("RAMTexture", "./Resources/Images/RAM.jpg");
+	TextureHandler::GetInstance()->CreateTexture("RAMTexture", "./Resources/Images/Alive1997.jpg");
+	TextureHandler::GetInstance()->CreateTexture("RAMTexture", "./Resources/Images/Alive2007.jpg");
+	TextureHandler::GetInstance()->CreateTexture("RAMTexture", "./Resources/Images/Homework.jpg");
+	TextureHandler::GetInstance()->CreateTexture("RAMTexture", "./Resources/Images/Human.jpg");
+#pragma endregion
+
+	//TextureHandler::GetInstance()->CreateTexture("CheckerBoardTexture", "./Resources/Images/CheckerboardTexture.png");
 
 	model = new Model(ShaderHandler::GetInstance()->GetShader("basicShader"));
 	model->AddMesh(cubeMesh = new Mesh(cube->GetFaces(),
 			TextureHandler::GetInstance()->GetTexture("RAMTexture"),
 			ShaderHandler::GetInstance()->GetShader("basicShader")));
 
-	//cubeMesh->SetRenderOption(RenderOptions::CUBETEXTURE);
+	
 	model->SetScale(glm::vec3(0.5f));
 	shape = new GameObject(model);
 

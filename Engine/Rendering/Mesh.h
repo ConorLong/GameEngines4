@@ -2,12 +2,18 @@
 #define MESH_H
 
 #include <glew.h>
+#include <string>
 #include <vector>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <bitset>
 
 #include "Camera.h"
+
+struct Light {
+	GLuint  lightPos, ambi, diff, spec, colour;
+};
+
 struct Vertex {
 	glm::vec3 position;
 	glm::vec3 normal;
@@ -27,7 +33,6 @@ inline RenderOptions operator |(RenderOptions a, RenderOptions b)
 {
 	return static_cast<RenderOptions>(static_cast<int>(a) | static_cast<int>(b));
 }
-
 inline RenderOptions& operator |=(RenderOptions& a, RenderOptions b)
 {
 	return a= a |b;
@@ -54,10 +59,11 @@ private:
 
 	GLuint shaderProgram;
 	GLuint textureID;
-	GLuint modelLoc, viewLoc, projectionLoc, textureLoc;
+	GLuint modelLoc, viewLoc, projectionLoc, textureLoc, viewPos;
 	GLuint vao, vbo, ebo;
 	std::vector<Vertex> vertexList;
 	RenderOptions options;
+	Light light;
 	
 };
 #endif

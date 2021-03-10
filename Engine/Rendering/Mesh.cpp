@@ -1,5 +1,6 @@
 #include "Mesh.h"
-
+#include"../Core/Debug.h"
+#include<iostream>
 Mesh::Mesh(std::vector<Vertex>& vertList, GLuint textureID, GLuint shaderProgram) : vao(0), vbo(0), ebo(0), vertexList(std::vector<Vertex>()), shaderProgram(0), modelLoc(0), viewLoc(0), projectionLoc(0),textureLoc(0), options(RenderOptions::DEFAULT)
 {
 	vertexList = vertList;
@@ -26,17 +27,19 @@ Mesh::~Mesh()
 
 void Mesh::Render(Camera* camera, glm::mat4 transform)
 {
-	switch (options)
-	{
 
-	default:
 		glUniform1i(textureLoc, 0);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, textureID);
 
+		LightSource* lights = camera->GetLightSources()[0];
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(camera->GetView()));
 		glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(camera->GetPerspective()));
-
+		glUniform3fv(light.lightPos, 1, glm::value_ptr(lights[0].GetPos()));
+	    glUniform3fv(light.colour, 1, glm::value_ptr(lights[0].GetColour()));
+		glUniform1f(light.ambi, lights[0].GetAmb());
+		glUniform1f(light.diff, lights[0].GetDiff());
+		glUniform1f(light.spec, lights[0].GetSpec());
 		glBindVertexArray(vao);
 
 		glEnable(GL_DEPTH_TEST);
@@ -48,40 +51,7 @@ void Mesh::Render(Camera* camera, glm::mat4 transform)
 		glBindVertexArray(0);
 
 
-	case RenderOptions::DEFAULT :
 
-	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(camera->GetView()));
-	glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(camera->GetPerspective()));
-	
-	glBindVertexArray(vao);
-	
-	glEnable(GL_DEPTH_TEST);
-	
-	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(transform));
-	
-	glDrawArrays(GL_TRIANGLES, 0, vertexList.size());
-	
-	glBindVertexArray(0);
-
-	case RenderOptions::TEXTURE :
-
-		glUniform1i(textureLoc, 0);
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, textureID);
-
-		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(camera->GetView()));
-		glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(camera->GetPerspective()));
-
-		glBindVertexArray(vao);
-
-		glEnable(GL_DEPTH_TEST);
-
-		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(transform));
-
-		glDrawArrays(GL_TRIANGLES, 0, vertexList.size());
-
-		glBindVertexArray(0);
-	}
 }
 
 void Mesh::SetRenderOption(enum RenderOptions option)
@@ -125,6 +95,16 @@ void Mesh::GenerateBuffers()
 	viewLoc = glGetUniformLocation(shaderProgram, "view");
 	projectionLoc = glGetUniformLocation(shaderProgram, "projection");
 	textureLoc = glGetUniformLocation(shaderProgram, "inputTexture");
+	viewPos = glGetUniformLocation(shaderProgram, "viewPos");
+
+	light.lightPos = glGetUniformLocation(shaderProgram, "light.lightPos");
+	light.ambi = glGetUniformLocation(shaderProgram, "light.ambient");
+	light.diff = glGetUniformLocation(shaderProgram, "light.diffuse");
+	light.spec = glGetUniformLocation(shaderProgram, "light.specular");
+	light.colour = glGetUniformLocation(shaderProgram, "light.colour");
+
+	int location = textureLoc;
+	std::cout << location << std::endl;
 }
 
 void Mesh::GenerateBuffers(std::vector<GLuint>& indices)

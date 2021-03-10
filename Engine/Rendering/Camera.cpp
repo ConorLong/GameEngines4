@@ -1,7 +1,7 @@
 #include "Camera.h"
 
 #include "../Core/EngineCore.h"
-Camera::Camera() : position(glm::vec3()), fov(0.0f), forward(glm::vec3()), up(glm::vec3()), right(glm::vec3()), worldUp(glm::vec3()), nearPlane(0.0f), farPlane(0.0f), yaw(0.0f), pitch(0.0f), perspective(glm::mat4()), orthographic(glm::mat4()), view(glm::mat4()) {
+Camera::Camera() : position(glm::vec3()), fov(0.0f), forward(glm::vec3()), up(glm::vec3()), right(glm::vec3()), worldUp(glm::vec3()), nearPlane(0.0f), farPlane(0.0f), yaw(0.0f), pitch(0.0f), perspective(glm::mat4()), orthographic(glm::mat4()), view(glm::mat4()), lights(0) {
 	fov = 45.0f;
 	forward = glm::vec3(0.0f, 0.0f, -1.0f);
 	up = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -19,6 +19,10 @@ Camera::Camera() : position(glm::vec3()), fov(0.0f), forward(glm::vec3()), up(gl
 
 Camera::~Camera()
 {
+	for(auto l : lights) {
+		delete l;
+		l = nullptr;
+	}
 }
 
 void Camera::SetPosition(glm::vec3 pos)
@@ -32,6 +36,16 @@ void Camera::SetRotation(float yaw, float pitch)
 	this->yaw = yaw;
 	this->pitch = pitch;
 	UpdateCameraVector();
+}
+
+void Camera::AddLightSource(LightSource* light)
+{
+	lights.emplace_back(light);
+}
+
+std::vector<LightSource*> Camera::GetLightSources() const
+{
+	return lights;
 }
 
 glm::mat4 Camera::GetView() const
