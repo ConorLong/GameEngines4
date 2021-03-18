@@ -19,10 +19,7 @@ Camera::Camera() : position(glm::vec3()), fov(0.0f), forward(glm::vec3()), up(gl
 
 Camera::~Camera()
 {
-	for(auto l : lights) {
-		delete l;
-		l = nullptr;
-	}
+	OnDestroy();
 }
 
 void Camera::SetPosition(glm::vec3 pos)
@@ -41,6 +38,15 @@ void Camera::SetRotation(float yaw, float pitch)
 void Camera::AddLightSource(LightSource* light)
 {
 	lights.emplace_back(light);
+}
+
+void Camera::OnDestroy()
+{
+	for (auto l : lights) {
+		delete l;
+		l = nullptr;
+	}
+	lights.clear();
 }
 
 std::vector<LightSource*> Camera::GetLightSources() const

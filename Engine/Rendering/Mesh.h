@@ -11,7 +11,7 @@
 #include "Camera.h"
 
 struct Light {
-	GLuint  lightPos, ambi, diff, spec, colour;
+	GLuint  lightPos, ambi, diff, spec, colour, shine;
 };
 
 struct Vertex {
@@ -41,29 +41,36 @@ inline RenderOptions& operator |=(RenderOptions& a, RenderOptions b)
 class Mesh
 {
 	
-
 public: 
+
 	Mesh(std::vector<Vertex>& vertexList, GLuint textureID, GLuint shaderProgram);
 	Mesh(std::vector<Vertex> vertexList, GLuint textureID, GLuint shaderProgram);
 	Mesh();
 	~Mesh();
 
+	float GetShine() const;
+
 	void Render(Camera* camera, glm::mat4 transform);
 	void SetRenderOption(enum RenderOptions option);
 	void SetRenderOption(std::vector<enum RenderOptions> optionList);
+
 private:
+
+	void LinkLightUniforms();
 	void GenerateBuffers();
 	void GenerateBuffers(std::vector<GLuint>& indices);
 	void CheckRenderOptions();
 
-
 	GLuint shaderProgram;
 	GLuint textureID;
+	GLuint lightsInScene;
 	GLuint modelLoc, viewLoc, projectionLoc, textureLoc, viewPos;
 	GLuint vao, vbo, ebo;
 	std::vector<Vertex> vertexList;
 	RenderOptions options;
-	Light light;
+	float shine;
+
+	std::vector<Light> lightUniforms;
 	
 };
 #endif

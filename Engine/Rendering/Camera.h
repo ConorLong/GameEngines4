@@ -17,6 +17,7 @@ public:
 
 	void AddLightSource(LightSource* light);
 
+	void OnDestroy();
 	std::vector<LightSource*> GetLightSources() const;
 
 	glm::mat4 GetView() const;
@@ -35,6 +36,5 @@ private:
 	glm::vec3 forward, up, right, worldUp;
 
 	std::vector<LightSource*> lights;
-	LightSource* light1 = nullptr;
 };
 #endif

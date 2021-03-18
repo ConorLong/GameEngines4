@@ -7,6 +7,7 @@ LightSource::LightSource(glm::vec3 lightPos, glm::vec3 lightColour, float amb, f
 	diffuse = diff;
 	specular = spec;
 	colour = lightColour;
+	
 }
 
 LightSource::~LightSource()

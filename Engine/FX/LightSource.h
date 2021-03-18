@@ -19,5 +19,6 @@ private:
 	float ambient;
 	float diffuse;
 	float specular;
+	
 };
 #endif

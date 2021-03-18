@@ -2,15 +2,17 @@
 #include"../Core/Debug.h"
 #include<iostream>
 #include<string>
-Mesh::Mesh(std::vector<Vertex>& vertList, GLuint textureID, GLuint shaderProgram) : vao(0), vbo(0), ebo(0), vertexList(std::vector<Vertex>()), shaderProgram(0), modelLoc(0), viewLoc(0), projectionLoc(0),textureLoc(0), options(RenderOptions::DEFAULT)
+#include "../Core/EngineCore.h"
+Mesh::Mesh(std::vector<Vertex>& vertList, GLuint textureID, GLuint shaderProgram) : vao(0), vbo(0), ebo(0), vertexList(std::vector<Vertex>()), shaderProgram(0), modelLoc(0), viewLoc(0), projectionLoc(0),textureLoc(0), shine(0), options(RenderOptions::DEFAULT)
 {
+	
 	vertexList = vertList;
 	this->shaderProgram = shaderProgram;
 	this->textureID = textureID;
 	GenerateBuffers();
 }
 
-Mesh::Mesh(std::vector<Vertex> vertList, GLuint textureID, GLuint shaderProgram) : vao(0), vbo(0), ebo(0), vertexList(std::vector<Vertex>()), shaderProgram(0), modelLoc(0), viewLoc(0), projectionLoc(0), textureLoc(0), options(RenderOptions::DEFAULT)
+Mesh::Mesh(std::vector<Vertex> vertList, GLuint textureID, GLuint shaderProgram) : vao(0), vbo(0), ebo(0), vertexList(std::vector<Vertex>()), shaderProgram(0), modelLoc(0), viewLoc(0), projectionLoc(0), textureLoc(0), shine(32), options(RenderOptions::DEFAULT)
 {
 	vertexList = vertList;
 	this->shaderProgram = shaderProgram;
@@ -26,6 +28,11 @@ Mesh::~Mesh()
 	vertexList.clear();
 }
 
+float Mesh::GetShine() const
+{
+	return shine;
+}
+
 void Mesh::Render(Camera* camera, glm::mat4 transform)
 {
 
@@ -33,15 +40,23 @@ void Mesh::Render(Camera* camera, glm::mat4 transform)
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, textureID);
 
-		LightSource* lights = camera->GetLightSources()[0];
+		std::vector<LightSource*> lights = camera->GetLightSources();
+
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(camera->GetView()));
 		glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(camera->GetPerspective()));
 		glUniform3fv(viewPos, 1, glm::value_ptr(camera->GetPosition()));
-		glUniform3fv(light.lightPos, 1, glm::value_ptr(lights[0].GetPos()));
-	    glUniform3fv(light.colour, 1, glm::value_ptr(lights[0].GetColour()));
-		glUniform1f(light.ambi, lights[0].GetAmb());
-		glUniform1f(light.diff, lights[0].GetDiff());
-		glUniform1f(light.spec, lights[0].GetSpec());
+
+		glUniform1ui(lightsInScene, camera->GetLightSources().size());
+		//Update all light uniforms
+		for (int i = 0; i < camera->GetLightSources().size(); i++) {
+		glUniform3fv(lightUniforms[i].lightPos, 1, glm::value_ptr(lights[i]->GetPos()));
+	    glUniform3fv(lightUniforms[i].colour, 1, glm::value_ptr(lights[i]->GetColour()));
+		glUniform1f(lightUniforms[i].ambi, lights[i]->GetAmb());
+		glUniform1f(lightUniforms[i].diff, lights[i]->GetDiff());
+		glUniform1f(lightUniforms[i].spec, lights[i]->GetSpec());
+		}
+
+		glUniform1f(shine, GetShine());
 		glBindVertexArray(vao);
 
 		glEnable(GL_DEPTH_TEST);
@@ -68,6 +83,28 @@ void Mesh::SetRenderOption(std::vector<enum RenderOptions> optionList)
 }
 
 
+
+void Mesh::LinkLightUniforms()
+{
+	
+	for (GLuint i = 0; i < EngineCore::GetInstance()->GetCamera()->GetLightSources().size(); i++) {
+		lightUniforms.emplace_back(Light());
+		std::string num = std::to_string(i);
+		lightUniforms[i].lightPos = glGetUniformLocation(shaderProgram, ("light[" + num +"].lightPos").c_str());
+		lightUniforms[i].ambi = glGetUniformLocation(shaderProgram, ("light[" + num + "].ambient").c_str());
+		lightUniforms[i].diff = glGetUniformLocation(shaderProgram, ("light[" + num + "].diffuse").c_str());
+		lightUniforms[i].spec = glGetUniformLocation(shaderProgram, ("light[" + num + "].specular").c_str());
+		lightUniforms[i].colour = glGetUniformLocation(shaderProgram, ("light[" + num + "].colour").c_str());
+		lightUniforms[i].shine = glGetUniformLocation(shaderProgram, ("light[" + num + "].shine").c_str());
+		lightsInScene = glGetUniformLocation(shaderProgram, "globalLights");
+		std::cout << lightUniforms[i].lightPos << std::endl;
+		std::cout << lightUniforms[i].ambi << std::endl;
+		std::cout << lightUniforms[i].diff << std::endl;
+		std::cout << lightUniforms[i].spec << std::endl;
+		std::cout << lightUniforms[i].colour << std::endl;
+		
+	}
+}
 
 void Mesh::GenerateBuffers()
 {
@@ -98,12 +135,17 @@ void Mesh::GenerateBuffers()
 	textureLoc = glGetUniformLocation(shaderProgram, "inputTexture");
 	viewPos = glGetUniformLocation(shaderProgram, "viewPos");
 
-	light.lightPos = glGetUniformLocation(shaderProgram, "light.lightPos");
-	light.ambi = glGetUniformLocation(shaderProgram, "light.ambient");
-	light.diff = glGetUniformLocation(shaderProgram, "light.diffuse");
-	light.spec = glGetUniformLocation(shaderProgram, "light.specular");
-	light.colour = glGetUniformLocation(shaderProgram, "light.colour");
 
+	LinkLightUniforms();
+	//light.lightPos = glGetUniformLocation(shaderProgram, "light.lightPos");
+	//light.ambi = glGetUniformLocation(shaderProgram, "light.ambient");
+	//light.diff = glGetUniformLocation(shaderProgram, "light.diffuse");
+	//light.spec = glGetUniformLocation(shaderProgram, "light.specular");
+	//light.colour = glGetUniformLocation(shaderProgram, "light.colour");
+	//light.shine = glGetUniformLocation(shaderProgram, "light.shine");
+	//lightsInScene = glGetUniformLocation(shaderProgram, "globalLights");
+
+	//Nice way to check for active uniforms
 	int total = -1;
 	glGetProgramiv(shaderProgram, GL_ACTIVE_UNIFORMS, &total);
 	for (int i = 0; i < total; ++i) {
@@ -114,7 +156,7 @@ void Mesh::GenerateBuffers()
 			&name_len, &num, &type, name);
 		name[name_len] = 0;
 		GLuint location = glGetUniformLocation(shaderProgram, name);
-
+	
 		printf("Uniform #%d Type: %u Name: %s\n", i, type, name);
 	}
 
@@ -129,7 +171,7 @@ void Mesh::GenerateBuffers(std::vector<GLuint>& indices)
 	glBindVertexArray(vao);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBufferData(GL_ARRAY_BUFFER, vertexList.size() * sizeof(Vertex), &vertexList[0], GL_STATIC_DRAW);
-
+	 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), &indices[0], GL_STATIC_DRAW);
 
