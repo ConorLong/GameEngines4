@@ -1,3 +1,18 @@
-﻿  LoadOBJModel.cpp
+﻿  EngineCore.cpp
+  Camera.cpp
+  GameObject.cpp
+  LoadOBJModel.cpp
+C:\Users\Conor\source\repos\GameEngines4\GameEngines4\Engine\Rendering\LoadOBJModel.cpp(96,22): warning C4018: '<': signed/unsigned mismatch
 C:\Users\Conor\source\repos\GameEngines4\GameEngines4\Engine\Rendering\LoadOBJModel.cpp(87,16): warning C4101: 'z': unreferenced local variable
+  Mesh.cpp
+C:\Users\Conor\source\repos\GameEngines4\GameEngines4\Engine\Rendering\Mesh.cpp(49,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Conor\source\repos\GameEngines4\GameEngines4\Engine\Rendering\Mesh.cpp(57,15): warning C4244: 'argument': conversion from 'float' to 'GLint', possible loss of data
+C:\Users\Conor\source\repos\GameEngines4\GameEngines4\Engine\Rendering\Mesh.cpp(62,21): warning C4018: '<': signed/unsigned mismatch
+  Model.cpp
+C:\Users\Conor\source\repos\GameEngines4\GameEngines4\Engine\Rendering\Model.cpp(65,20): warning C4018: '<': signed/unsigned mismatch
+  Game1.cpp
+  GameScene.cpp
+  StartScene.cpp
+  Main.cpp
+  Generating Code...
   GameEngines4.vcxproj -> C:\Users\Conor\source\repos\GameEngines4\Debug\GameEngines4.exe

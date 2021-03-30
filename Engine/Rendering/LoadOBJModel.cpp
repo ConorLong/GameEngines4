@@ -92,17 +92,28 @@ void LoadOBJModel::LoadModel(const std::string& filePath)
 			std::stringstream faces(line.substr(2));
 			std::string s = faces.str();
 			s.erase(remove(s.begin(), s.end(), '/'), s.end());
-			
+				int t = 0;
+			for (int i = 0; i < s.size() / 2; i++) {
+				if (&s.at(i) != " ") {
+					if (!isdigit(atoi(&s.at(i))) && !isdigit(atoi(&s.at(i + 1)))) {
+						s.insert(i + t + 1, " ");
+					}
+				}
+				t++;
+			}
 			std::stringstream f(s);
 			
-			unsigned int index[3], tex[3], norm[3];
+			int index[3], tex[3], norm[3];
 			
+			f >> index[0] >> tex[0] >> norm[0]
+				>> index[1] >> tex[1] >> norm[1]
+				>> index[2] >> tex[2] >> norm[2];
 
 			for (int i = 0; i < 3; i++) {
 				int ctr = 0;
-				indices.push_back(index[0] - 1);
-				textureIndices.push_back(tex[0] - 1);
-				normalIndices.push_back(norm[0] - 1);
+				indices.push_back(index[i] - 1);
+				textureIndices.push_back(tex[i] - 1);
+				normalIndices.push_back(norm[i] - 1);
 				ctr += 5;
 			}
 		}

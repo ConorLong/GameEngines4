@@ -2,6 +2,7 @@
 #define LOADOBJMODEL_H
 
 #include<sstream>
+#include <cctype>
 #include "Mesh.h"
 #include "../Graphics/TextureHandler.h"
 class LoadOBJModel
