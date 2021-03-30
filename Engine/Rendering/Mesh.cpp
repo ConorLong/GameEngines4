@@ -3,42 +3,40 @@
 #include<iostream>
 #include<string>
 #include "../Core/EngineCore.h"
-Mesh::Mesh(std::vector<Vertex>& vertList, GLuint textureID, GLuint shaderProgram) : vao(0), vbo(0), ebo(0), vertexList(std::vector<Vertex>()), shaderProgram(0), modelLoc(0), viewLoc(0), projectionLoc(0),textureLoc(0), shine(0), options(RenderOptions::DEFAULT)
+Mesh::Mesh(SubMesh& sMesh, GLuint shaderProgram) : vao(0), vbo(0), ebo(0), shaderProgram(0), modelLoc(0), viewLoc(0), projectionLoc(0),textureLoc(0), shine(0), options(RenderOptions::DEFAULT)
 {
 	
-	vertexList = vertList;
+	subMesh = sMesh;
 	this->shaderProgram = shaderProgram;
-	this->textureID = textureID;
 	GenerateBuffers();
 }
 
-Mesh::Mesh(std::vector<Vertex> vertList, GLuint textureID, GLuint shaderProgram) : vao(0), vbo(0), ebo(0), vertexList(std::vector<Vertex>()), shaderProgram(0), modelLoc(0), viewLoc(0), projectionLoc(0), textureLoc(0), shine(32), options(RenderOptions::DEFAULT)
+Mesh::Mesh()
 {
-	vertexList = vertList;
-	this->shaderProgram = shaderProgram;
-	this->textureID = textureID;
-	GenerateBuffers();
 }
+
 
 Mesh::~Mesh()
 {
 	glDeleteVertexArrays(1, &vao);
 	glDeleteBuffers(1, &vbo);
 	glDeleteBuffers(1, &ebo);
-	vertexList.clear();
+
+	if (subMesh.vertexList.size() > 0) {
+		subMesh.vertexList.clear();
+	}
+
+	if (subMesh.meshIndices.size() > 0) {
+		subMesh.meshIndices.clear();
+	}
 }
 
-float Mesh::GetShine() const
-{
-	return shine;
-}
-
-void Mesh::Render(Camera* camera, glm::mat4 transform)
+void Mesh::Render(Camera* camera, std::vector<glm::mat4> instances_)
 {
 
 		glUniform1i(textureLoc, 0);
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, textureID);
+		glBindTexture(GL_TEXTURE_2D, subMesh.textureID);
 
 		std::vector<LightSource*> lights = camera->GetLightSources();
 
@@ -46,7 +44,7 @@ void Mesh::Render(Camera* camera, glm::mat4 transform)
 		glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(camera->GetPerspective()));
 		glUniform3fv(viewPos, 1, glm::value_ptr(camera->GetPosition()));
 
-		glUniform1ui(lightsInScene, camera->GetLightSources().size());
+		glUniform1i(lightsInScene, camera->GetLightSources().size());
 		//Update all light uniforms
 		for (int i = 0; i < camera->GetLightSources().size(); i++) {
 		glUniform3fv(lightUniforms[i].lightPos, 1, glm::value_ptr(lights[i]->GetPos()));
@@ -61,9 +59,10 @@ void Mesh::Render(Camera* camera, glm::mat4 transform)
 
 		glEnable(GL_DEPTH_TEST);
 
-		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(transform));
-
-		glDrawArrays(GL_TRIANGLES, 0, vertexList.size());
+		for (int i = 0; i < instances_.size(); i++ ) {
+			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(instances_[i]));
+			glDrawArrays(GL_TRIANGLES, 0, subMesh.vertexList.size());
+		}
 
 		glBindVertexArray(0);
 
@@ -90,20 +89,14 @@ void Mesh::LinkLightUniforms()
 	for (GLuint i = 0; i < EngineCore::GetInstance()->GetCamera()->GetLightSources().size(); i++) {
 		lightUniforms.emplace_back(Light());
 		std::string num = std::to_string(i);
-		lightUniforms[i].lightPos = glGetUniformLocation(shaderProgram, ("light[" + num +"].lightPos").c_str());
-		lightUniforms[i].ambi = glGetUniformLocation(shaderProgram, ("light[" + num + "].ambient").c_str());
-		lightUniforms[i].diff = glGetUniformLocation(shaderProgram, ("light[" + num + "].diffuse").c_str());
-		lightUniforms[i].spec = glGetUniformLocation(shaderProgram, ("light[" + num + "].specular").c_str());
-		lightUniforms[i].colour = glGetUniformLocation(shaderProgram, ("light[" + num + "].colour").c_str());
-		lightUniforms[i].shine = glGetUniformLocation(shaderProgram, ("light[" + num + "].shine").c_str());
-		lightsInScene = glGetUniformLocation(shaderProgram, "globalLights");
-		std::cout << lightUniforms[i].lightPos << std::endl;
-		std::cout << lightUniforms[i].ambi << std::endl;
-		std::cout << lightUniforms[i].diff << std::endl;
-		std::cout << lightUniforms[i].spec << std::endl;
-		std::cout << lightUniforms[i].colour << std::endl;
-		
+		lightUniforms[i].lightPos = glGetUniformLocation(shaderProgram, ("light["+num+"].lightPos").c_str());
+		lightUniforms[i].ambi = glGetUniformLocation(shaderProgram, ("light["+num+"].ambient").c_str());
+		lightUniforms[i].diff = glGetUniformLocation(shaderProgram, ("light["+num+"].diffuse").c_str());
+		lightUniforms[i].spec = glGetUniformLocation(shaderProgram, ("light["+num+"].specular").c_str());
+		lightUniforms[i].colour = glGetUniformLocation(shaderProgram, ("light["+num+"].colour").c_str());
+		lightUniforms[i].shine = glGetUniformLocation(shaderProgram, ("light["+num+"].shine").c_str());
 	}
+		lightsInScene = glGetUniformLocation(shaderProgram, "globalLights");
 }
 
 void Mesh::GenerateBuffers()
@@ -112,7 +105,7 @@ void Mesh::GenerateBuffers()
 	glGenBuffers(1, &vbo);
 	glBindVertexArray(vao);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, vertexList.size() * sizeof(Vertex), &vertexList[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, subMesh.vertexList.size() * sizeof(Vertex), &subMesh.vertexList[0], GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)0);
@@ -137,28 +130,21 @@ void Mesh::GenerateBuffers()
 
 
 	LinkLightUniforms();
-	//light.lightPos = glGetUniformLocation(shaderProgram, "light.lightPos");
-	//light.ambi = glGetUniformLocation(shaderProgram, "light.ambient");
-	//light.diff = glGetUniformLocation(shaderProgram, "light.diffuse");
-	//light.spec = glGetUniformLocation(shaderProgram, "light.specular");
-	//light.colour = glGetUniformLocation(shaderProgram, "light.colour");
-	//light.shine = glGetUniformLocation(shaderProgram, "light.shine");
-	//lightsInScene = glGetUniformLocation(shaderProgram, "globalLights");
 
 	//Nice way to check for active uniforms
-	int total = -1;
-	glGetProgramiv(shaderProgram, GL_ACTIVE_UNIFORMS, &total);
-	for (int i = 0; i < total; ++i) {
-		int name_len = -1, num = -1;
-		GLenum type = GL_ZERO;
-		char name[100];
-		glGetActiveUniform(shaderProgram, GLuint(i), sizeof(name) - 1,
-			&name_len, &num, &type, name);
-		name[name_len] = 0;
-		GLuint location = glGetUniformLocation(shaderProgram, name);
-	
-		printf("Uniform #%d Type: %u Name: %s\n", i, type, name);
-	}
+	//int total = -1;
+	//glGetProgramiv(shaderProgram, GL_ACTIVE_UNIFORMS, &total);
+	//for (int i = 0; i < total; ++i) {
+	//	int name_len = -1, num = -1;
+	//	GLenum type = GL_ZERO;
+	//	char name[100];
+	//	glGetActiveUniform(shaderProgram, GLuint(i), sizeof(name) - 1,
+	//		&name_len, &num, &type, name);
+	//	name[name_len] = 0;
+	//	GLuint location = glGetUniformLocation(shaderProgram, name);
+	//
+	//	printf("Uniform #%d Type: %u Name: %s\n", i, type, name);
+	//}
 
 }
 
@@ -170,7 +156,7 @@ void Mesh::GenerateBuffers(std::vector<GLuint>& indices)
 
 	glBindVertexArray(vao);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, vertexList.size() * sizeof(Vertex), &vertexList[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, subMesh.vertexList.size() * sizeof(Vertex), &subMesh.vertexList[0], GL_STATIC_DRAW);
 	 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), &indices[0], GL_STATIC_DRAW);
@@ -193,6 +179,11 @@ void Mesh::GenerateBuffers(std::vector<GLuint>& indices)
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
+
+float Mesh::GetShine() const
+{
+	return shine;
+}
 void Mesh::CheckRenderOptions()
 {
 

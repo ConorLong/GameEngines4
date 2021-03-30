@@ -33,7 +33,7 @@ vec3 CalculateDirectLight(DirLight light, vec3 normal, vec3 viewDir)
 	vec3 diffuse = (diff * light.diffuse) * texture(inputTexture, TexCoords).rgb * light.colour;
 
 	vec3 reflectDir = reflect(-lightDir, norm);
-	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+	float spec = pow(max(dot(viewDir, reflectDir), 0.0), light.shine);
 	vec3 specular = (spec * light.specular) * light.colour;
 	
 	return(ambi + diffuse + specular);
@@ -45,8 +45,9 @@ void main()
 	vec3 viewDir = normalize(viewPos - FragPos);
 	vec3 result;
 
-	for(int i = 0; i < globalLights; i++){
-	result += CalculateDirectLight(light[i], norm, viewDir);
+	for(int i = 0; i < globalLights; i++)
+	{
+		result += CalculateDirectLight(light[i], norm, viewDir);
 	}
 
 	fColour = vec4(result, 1.0f);

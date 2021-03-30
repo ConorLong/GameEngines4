@@ -21,6 +21,12 @@ struct Vertex {
 	glm::vec3 colour;
 };
 
+struct SubMesh {
+	std::vector<Vertex> vertexList;
+	std::vector<unsigned int> meshIndices;
+	GLuint textureID;
+};
+
 //Probably put this in its own header
 enum class RenderOptions
 {
@@ -43,14 +49,13 @@ class Mesh
 	
 public: 
 
-	Mesh(std::vector<Vertex>& vertexList, GLuint textureID, GLuint shaderProgram);
-	Mesh(std::vector<Vertex> vertexList, GLuint textureID, GLuint shaderProgram);
+	Mesh(SubMesh& sMesh, GLuint shaderProgram);
 	Mesh();
 	~Mesh();
 
 	float GetShine() const;
 
-	void Render(Camera* camera, glm::mat4 transform);
+	void Render(Camera* camera, std::vector<glm::mat4> instances_);
 	void SetRenderOption(enum RenderOptions option);
 	void SetRenderOption(std::vector<enum RenderOptions> optionList);
 
@@ -62,11 +67,12 @@ private:
 	void CheckRenderOptions();
 
 	GLuint shaderProgram;
-	GLuint textureID;
+	SubMesh subMesh;
+
 	GLuint lightsInScene;
 	GLuint modelLoc, viewLoc, projectionLoc, textureLoc, viewPos;
 	GLuint vao, vbo, ebo;
-	std::vector<Vertex> vertexList;
+
 	RenderOptions options;
 	float shine;
 
