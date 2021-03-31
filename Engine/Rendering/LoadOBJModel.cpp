@@ -91,16 +91,23 @@ void LoadOBJModel::LoadModel(const std::string& filePath)
 		if (line.substr(0, 2) == "f ") {
 			std::stringstream faces(line.substr(2));
 			std::string s = faces.str();
-			s.erase(remove(s.begin(), s.end(), '/'), s.end());
-				int t = 0;
-			for (int i = 0; i < s.size() / 2; i++) {
-				if (&s.at(i) != " ") {
-					if (!isdigit(atoi(&s.at(i))) && !isdigit(atoi(&s.at(i + 1)))) {
-						s.insert(i + t + 1, " ");
+				
+			for (int i = 0; i < s.size() - 1; i++) {
+				int t = i + 1;
+				if (!isspace(s[i + 1])) {
+					if (isdigit(s.at(i)) && isdigit(s.at(i + 1))) {
+					
+					}
+					else {
+						if (!isspace(s[i + 1])) {
+							s.insert(i + 1, " ");
+							++i;
+						}
 					}
 				}
-				t++;
+				
 			}
+			s.erase(remove(s.begin(), s.end(), '/'), s.end());
 			std::stringstream f(s);
 			
 			int index[3], tex[3], norm[3];
