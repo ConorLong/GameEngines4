@@ -20,9 +20,6 @@ GameObject::GameObject(Model* m, glm::vec3 position_) : model(nullptr), position
 
 GameObject::~GameObject()
 {
-	if (model) {
-		delete model;
-	}
 	model = nullptr;
 }
 
@@ -58,6 +55,11 @@ float GameObject::GetAngle() const
 	return angle;
 }
 
+std::string GameObject::GetID() const
+{
+	return ID;
+}
+
 void GameObject::SetPosition(glm::vec3 pos)
 {
 	position = pos;
@@ -88,4 +90,9 @@ void GameObject::SetAngle(float angle_)
 	if (model != nullptr) {
 		model->UpdateInstance(modelInstance, position, angle, rotation, scale);
 	}
+}
+
+void GameObject::SetID(std::string ID_)
+{
+	ID = ID_;
 }

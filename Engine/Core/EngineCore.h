@@ -13,7 +13,9 @@
 #include "../Graphics/ShaderHandler.h"
 
 #include "../Rendering/Camera.h"
+#include "../Rendering/SceneGraph.h"
 
+#include"../Graphics/MaterialHandler.h"
 #include "../Graphics/TextureHandler.h"
 class EngineCore
 {

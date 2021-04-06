@@ -1,5 +1,5 @@
 #include "LoadOBJModel.h"
-LoadOBJModel::LoadOBJModel() : vertices(std::vector<glm::vec3>()), normals(std::vector<glm::vec3>()), texCoords(std::vector<glm::vec2>()), indices(std::vector<unsigned int>()), normalIndices(std::vector<unsigned int>()), textureIndices(std::vector<unsigned int>()), meshVertices(std::vector<Vertex>()), subMeshes(std::vector<SubMesh>()), currentTexture(0) 
+LoadOBJModel::LoadOBJModel() : vertices(std::vector<glm::vec3>()), normals(std::vector<glm::vec3>()), texCoords(std::vector<glm::vec2>()), indices(std::vector<unsigned int>()), normalIndices(std::vector<unsigned int>()), textureIndices(std::vector<unsigned int>()), meshVertices(std::vector<Vertex>()), subMeshes(std::vector<SubMesh>()), currentMaterial(Material()) 
 {
 	vertices.reserve(200);
 	normals.reserve(200);
@@ -45,7 +45,7 @@ void LoadOBJModel::PostProcessing()
 	SubMesh mesh;
 	mesh.vertexList = meshVertices;
 	mesh.meshIndices = indices;
-	mesh.textureID = currentTexture;
+	mesh.material = currentMaterial;
 
 	subMeshes.push_back(mesh);
 
@@ -54,7 +54,7 @@ void LoadOBJModel::PostProcessing()
 	textureIndices.clear();
 	meshVertices.clear();
 
-	currentTexture = 0;
+	currentMaterial = Material();
 }
 
 void LoadOBJModel::LoadModel(const std::string& filePath)
@@ -96,7 +96,6 @@ void LoadOBJModel::LoadModel(const std::string& filePath)
 				int t = i + 1;
 				if (!isspace(s[i + 1])) {
 					if (isdigit(s.at(i)) && isdigit(s.at(i + 1))) {
-					
 					}
 					else {
 						if (!isspace(s[i + 1])) {
@@ -105,7 +104,6 @@ void LoadOBJModel::LoadModel(const std::string& filePath)
 						}
 					}
 				}
-				
 			}
 			s.erase(remove(s.begin(), s.end(), '/'), s.end());
 			std::stringstream f(s);
@@ -137,24 +135,11 @@ void LoadOBJModel::LoadModel(const std::string& filePath)
 
 void LoadOBJModel::LoadMaterial(const std::string& matName)
 {
-	currentTexture = TextureHandler::GetInstance()->GetTexture(matName);
-	if (currentTexture == 0) {
-		TextureHandler::GetInstance()->CreateTexture(matName, "Resources/Textures" + matName + ".png");
-		currentTexture = TextureHandler::GetInstance()->GetTexture(matName);
-	}
+	currentMaterial = MaterialHandler::GetInstance()->GetMaterial(matName);
+	
 }
 
 void LoadOBJModel::LoadMaterialLibrary(const std::string& matFilePath)
 {
-	std::ifstream in(matFilePath.c_str(), std::ios::in);
-	if (!in) {
-		Debug::Error("Cannot open MTL file: " + matFilePath, "LoadOBJModel.cpp", __LINE__);
-
-	}
-	std::string line;
-	while (std::getline(in, line)) {
-		if (line.substr(0, 7) == "newmtl ") {
-			LoadMaterial(line.substr(7));
-		}
-	}
+	MaterialLoader::LoadMaterial(matFilePath);
 }

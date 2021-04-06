@@ -2,7 +2,7 @@
 #define GAMESCENE_H
 
 #include "../../Engine/Core/EngineCore.h"
-#include "../../Engine/Rendering/Shapes/Cube.h"
+
 class GameScene: public Scene
 {
 public:
@@ -16,9 +16,5 @@ public:
 private:
 	LightSource* light2;
 	LightSource* light1;
-	GameObject* shape;
-	Model* model;
-	Mesh* cubeMesh;
-	Cube* cube;
 };
 #endif

@@ -1,7 +1,6 @@
 #version 450 core
 in vec3 Normal;
 in vec2 TexCoords;
-in vec3 Colour;
 in vec3 Position;
 in vec3 FragPos;
 
@@ -33,7 +32,7 @@ vec3 CalculateDirectLight(DirLight light, vec3 normal, vec3 viewDir)
 	vec3 diffuse = (diff * light.diffuse) * texture(inputTexture, TexCoords).rgb * light.colour;
 
 	vec3 reflectDir = reflect(-lightDir, norm);
-	float spec = pow(max(dot(viewDir, reflectDir), 0.0), light.shine);
+	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 0.5);
 	vec3 specular = (spec * light.specular) * light.colour;
 	
 	return(ambi + diffuse + specular);
@@ -49,6 +48,6 @@ void main()
 	{
 		result += CalculateDirectLight(light[i], norm, viewDir);
 	}
-
+	
 	fColour = vec4(result, 1.0f);
 }

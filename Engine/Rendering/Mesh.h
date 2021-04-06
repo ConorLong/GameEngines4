@@ -9,6 +9,7 @@
 #include <bitset>
 
 #include "Camera.h"
+#include"../Graphics/MaterialHandler.h"
 
 struct Light {
 	GLuint  lightPos, ambi, diff, spec, colour, shine;
@@ -18,13 +19,12 @@ struct Vertex {
 	glm::vec3 position;
 	glm::vec3 normal;
 	glm::vec2 texCoords;
-	glm::vec3 colour;
 };
 
 struct SubMesh {
 	std::vector<Vertex> vertexList;
 	std::vector<unsigned int> meshIndices;
-	GLuint textureID;
+	Material material;
 };
 
 //Probably put this in its own header
@@ -58,7 +58,7 @@ public:
 	void Render(Camera* camera, std::vector<glm::mat4> instances_);
 	void SetRenderOption(enum RenderOptions option);
 	void SetRenderOption(std::vector<enum RenderOptions> optionList);
-
+	GLuint GetShaderProgram() const;
 private:
 
 	void LinkLightUniforms();

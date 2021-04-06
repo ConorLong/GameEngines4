@@ -16,12 +16,14 @@ public:
 	glm::vec3 GetRotation() const;
 	glm::vec3 GetScale() const;
 	float GetAngle() const;
+	std::string GetID() const;
 
 
 	void SetPosition(glm::vec3 pos);
 	void SetRotation(glm::vec3 rot);
 	void SetScale(glm::vec3 scale_);
 	void SetAngle(float angle_);
+	void SetID(std::string ID_);
 
 private:
 	Model* model;
@@ -30,5 +32,6 @@ private:
 	glm::vec3 rotation;
 	glm::vec3 scale;
 	float angle;
+	std::string ID;
 };
 #endif
