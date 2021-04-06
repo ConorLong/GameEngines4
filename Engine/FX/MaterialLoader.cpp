@@ -26,7 +26,35 @@ void MaterialLoader::LoadMaterial(std::string filePath)
 			m.diffuseMap = LoadTexture(matName);
 			m.name = matName;
 		}
-		else if (line.substr(0, 2) == "") {}
+		
+		//DIFFUSE
+		if (line.substr(0, 3) == "\tKd") {
+			std::stringstream n(line.substr(3));
+			float x, y, z;
+			n >> x >> y >> z;
+			m.diffuse = glm::vec3(x, y, z);
+		}
+		//SPEC
+		if (line.substr(0, 3) == "\tKs") {
+			std::stringstream n(line.substr(3));
+			float x, y, z;
+			n >> x >> y >> z;
+			m.specular = glm::vec3(x, y, z);
+		}
+		//AMBIENT
+		if (line.substr(0, 3) == "\tKa") {
+			std::stringstream n(line.substr(3));
+			float x, y, z;
+			n >> x >> y >> z;
+			m.ambient = glm::vec3(x, y, z);
+		}
+		//ALPHA
+		if (line.substr(0, 2) == "\td") {
+			std::stringstream n(line.substr(2));
+			float x;
+			n >> x;
+			m.shininess = x;
+		}
 	}
 
 	if (m.diffuseMap != 0) {
