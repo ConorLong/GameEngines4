@@ -4,11 +4,20 @@ in vec2 TexCoords;
 in vec3 Position;
 in vec3 FragPos;
 
-uniform sampler2D inputTexture;
 uniform vec3 viewPos;
 uniform int globalLights;
 
 out vec4 fColour;
+
+struct Material
+{
+sampler2D diffuseMap;
+vec3 ambient;
+vec3 diffuse;
+vec3 specular;
+float shine;
+float alpha;
+};
 
 struct DirLight
 {
@@ -17,23 +26,23 @@ vec3 lightPos;
 float ambient;
 float diffuse;
 float specular;
-float shine;
 };
 
 uniform DirLight light[3];
+uniform Material material;
 
 vec3 CalculateDirectLight(DirLight light, vec3 normal, vec3 viewDir)
 {
-	vec3 ambi = light.ambient * texture(inputTexture, TexCoords).rgb * light.colour;
+	vec3 ambi = light.ambient * material.ambient * texture(material.diffuseMap, TexCoords).rgb * light.colour;
 
 	vec3 norm = normalize(Normal);
 	vec3 lightDir = normalize(light.lightPos - FragPos);
 	float diff = max(dot(norm, lightDir), 0.0);
-	vec3 diffuse = (diff * light.diffuse) * texture(inputTexture, TexCoords).rgb * light.colour;
+	vec3 diffuse = (diff * material.diffuse) * texture(material.diffuseMap, TexCoords).rgb * light.colour;
 
 	vec3 reflectDir = reflect(-lightDir, norm);
-	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 0.5);
-	vec3 specular = (spec * light.specular) * light.colour;
+	float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shine);
+	vec3 specular = (spec * material.specular) * light.colour;
 	
 	return(ambi + diffuse + specular);
 }
@@ -49,5 +58,5 @@ void main()
 		result += CalculateDirectLight(light[i], norm, viewDir);
 	}
 	
-	fColour = vec4(result, 1.0f);
+	fColour = vec4(result, material.alpha);
 }

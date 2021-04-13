@@ -1,3 +1,3 @@
 [INFO]:Start scene createdin: C:\Users\Conor\source\repos\GameEngines4\GameEngines4\Game\Scenes\StartScene.cpp on line: 13
-[INFO]:Everything workedin: C:\Users\Conor\source\repos\GameEngines4\GameEngines4\Engine\Core\EngineCore.cpp on line: 56
+[INFO]:Everything workedin: C:\Users\Conor\source\repos\GameEngines4\GameEngines4\Engine\Core\EngineCore.cpp on line: 81
 [INFO]:Game scene createdin: C:\Users\Conor\source\repos\GameEngines4\GameEngines4\Game\Scenes\GameScene.cpp on line: 15

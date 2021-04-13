@@ -17,6 +17,8 @@
 
 #include"../Graphics/MaterialHandler.h"
 #include "../Graphics/TextureHandler.h"
+
+#include"../Events/EventListener.h"
 class EngineCore
 {
 public:
@@ -40,6 +42,11 @@ public:
 	void SetCurrentScene(int sceneNum);
 	void SetGameInterface(GameInterface* interface);
 	void SetCamera(Camera* camera);
+
+	void NotifyOfMousePress(glm::ivec2 mouse_, int buttontype);
+	void NotifyOfMouseRelease(glm::ivec2 mouse_, int buttontype);
+	void NotifyOfMouseMove(glm::ivec2 mouse_);
+	void NotifyOfMouseScroll(int y);
 private:
 
 

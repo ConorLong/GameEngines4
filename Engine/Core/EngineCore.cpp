@@ -31,6 +31,28 @@ EngineCore::~EngineCore()
 	 this->camera = camera;
  }
 
+ void EngineCore::NotifyOfMousePress(glm::ivec2 mouse_, int buttontype)
+ {
+ }
+
+ void EngineCore::NotifyOfMouseRelease(glm::ivec2 mouse_, int buttontype)
+ {
+ }
+
+ void EngineCore::NotifyOfMouseMove(glm::ivec2 mouse_)
+ {
+	 if (camera) {
+		 camera->ProcessMouseMovement(MouseEventListener::GetMouseOffset());
+	 }
+ }
+
+ void EngineCore::NotifyOfMouseScroll(int y)
+ {
+	 if (camera) {
+		 camera->ProcessMouseZoom(y);
+	 }
+ }
+
 bool EngineCore::OnCreate(std::string name, int width, int height)
 {
 	Debug::OnCreate();
@@ -41,6 +63,9 @@ bool EngineCore::OnCreate(std::string name, int width, int height)
 		
 		return isRunning = false;
 	}
+
+	SDL_WarpMouseInWindow(window->GetWindow(), window->GetWidth() / 2, window->GetHeight() / 2);
+	MouseEventListener::RegisterEngineObject(this);
 
 	ShaderHandler::GetInstance()->CreateProgram("colourShader", "Engine/Shaders/ColourVertexShader.glsl", "Engine/Shaders/ColourFragmentShader.glsl");
 	ShaderHandler::GetInstance()->CreateProgram("basicShader", "Engine/Shaders/VertexShader.glsl", "Engine/Shaders/FragmentShader.glsl");
@@ -63,6 +88,7 @@ void EngineCore::Run()
 	while (isRunning) {
 		timer.UpdateFrameTicks();
 		Update(timer.GetDeltaTime());
+		EventListener::Update();
 		Render();
 		SDL_Delay(timer.GetSleepTime(fps));
 	}
@@ -132,6 +158,7 @@ void EngineCore::OnDestroy()
 	TextureHandler::GetInstance()->OnDestroy();
 	SceneGraph::GetInstance()->OnDestroy();
 	MaterialHandler::GetInstance()->OnDestroy();
+
 
 	delete gInterface;
 	gInterface = nullptr;

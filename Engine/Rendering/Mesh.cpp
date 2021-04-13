@@ -39,6 +39,12 @@ void Mesh::Render(Camera* camera, std::vector<glm::mat4> instances_)
 
 		std::vector<LightSource*> lights = camera->GetLightSources();
 
+		glUniform3fv(subMesh.uniformLocations.ambiLoc, 1, glm::value_ptr(subMesh.material.ambient));
+		glUniform3fv(subMesh.uniformLocations.diffLoc, 1, glm::value_ptr(subMesh.material.diffuse));
+		glUniform3fv(subMesh.uniformLocations.specLoc, 1, glm::value_ptr(subMesh.material.specular));
+		glUniform1f(subMesh.uniformLocations.shineLoc, subMesh.material.shininess);
+		glUniform1f(subMesh.uniformLocations.transparencyLoc, subMesh.material.transparency);
+
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(camera->GetView()));
 		glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(camera->GetPerspective()));
 		glUniform3fv(viewPos, 1, glm::value_ptr(camera->GetPosition()));
@@ -53,7 +59,6 @@ void Mesh::Render(Camera* camera, std::vector<glm::mat4> instances_)
 		glUniform1f(lightUniforms[i].spec, lights[i]->GetSpec());
 		}
 
-		glUniform1f(shine, GetShine());
 		glBindVertexArray(vao);
 
 		glEnable(GL_DEPTH_TEST);
@@ -87,6 +92,16 @@ GLuint Mesh::GetShaderProgram() const
 }
 
 
+
+void Mesh::LinkMaterialUniforms()
+{
+	subMesh.uniformLocations.ambiLoc = glGetUniformLocation(shaderProgram, "material.ambient");
+	subMesh.uniformLocations.specLoc = glGetUniformLocation(shaderProgram, "material.specular");
+	subMesh.uniformLocations.diffLoc = glGetUniformLocation(shaderProgram, "material.diffuse");
+	subMesh.uniformLocations.shineLoc = glGetUniformLocation(shaderProgram, "material.shine");
+	subMesh.uniformLocations.transparencyLoc = glGetUniformLocation(shaderProgram, "material.alpha");
+	subMesh.uniformLocations.diffuseMap = glGetUniformLocation(shaderProgram, "material.diffuseMap");
+}
 
 void Mesh::LinkLightUniforms()
 {
@@ -128,11 +143,11 @@ void Mesh::GenerateBuffers()
 	modelLoc = glGetUniformLocation(shaderProgram, "model");
 	viewLoc = glGetUniformLocation(shaderProgram, "view");
 	projectionLoc = glGetUniformLocation(shaderProgram, "projection");
-	textureLoc = glGetUniformLocation(shaderProgram, "inputTexture");
 	viewPos = glGetUniformLocation(shaderProgram, "viewPos");
 
 
 	LinkLightUniforms();
+	LinkMaterialUniforms();
 
 	//Nice way to check for active uniforms
 	//int total = -1;
@@ -149,35 +164,6 @@ void Mesh::GenerateBuffers()
 	//	printf("Uniform #%d Type: %u Name: %s\n", i, type, name);
 	//}
 
-}
-
-void Mesh::GenerateBuffers(std::vector<GLuint>& indices)
-{
-	glGenVertexArrays(1, &vao);
-	glGenBuffers(1, &vbo);
-	glGenBuffers(1, &ebo);
-
-	glBindVertexArray(vao);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, subMesh.vertexList.size() * sizeof(Vertex), &subMesh.vertexList[0], GL_STATIC_DRAW);
-	 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), &indices[0], GL_STATIC_DRAW);
-
-	//glBindBuffer(GL_ARRAY_BUFFER, 0);
-	 
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)0);
-
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, normal));
-
-	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, texCoords));
-
-
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 

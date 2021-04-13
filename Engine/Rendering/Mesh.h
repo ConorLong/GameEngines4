@@ -11,6 +11,10 @@
 #include "Camera.h"
 #include"../Graphics/MaterialHandler.h"
 
+struct MaterialLocations {
+	GLuint diffuseMap, shineLoc, transparencyLoc, ambiLoc, diffLoc, specLoc;
+};
+
 struct Light {
 	GLuint  lightPos, ambi, diff, spec, colour, shine;
 };
@@ -25,6 +29,8 @@ struct SubMesh {
 	std::vector<Vertex> vertexList;
 	std::vector<unsigned int> meshIndices;
 	Material material;
+	MaterialLocations uniformLocations;
+	
 };
 
 //Probably put this in its own header
@@ -61,13 +67,14 @@ public:
 	GLuint GetShaderProgram() const;
 private:
 
+	void LinkMaterialUniforms();
 	void LinkLightUniforms();
 	void GenerateBuffers();
-	void GenerateBuffers(std::vector<GLuint>& indices);
 	void CheckRenderOptions();
 
 	GLuint shaderProgram;
 	SubMesh subMesh;
+
 
 	GLuint lightsInScene;
 	GLuint modelLoc, viewLoc, projectionLoc, textureLoc, viewPos;

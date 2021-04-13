@@ -25,6 +25,8 @@ public:
 	glm::mat4 GetOrtho() const;
 	glm::vec3 GetPosition() const;
 
+	void ProcessMouseMovement(glm::vec2 offset);
+	void ProcessMouseZoom(int y);
 private:
 
 	void UpdateCameraVector();
