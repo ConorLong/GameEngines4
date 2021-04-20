@@ -15,6 +15,7 @@ Camera::Camera() : position(glm::vec3()), fov(0.0f), forward(glm::vec3()), up(gl
 	orthographic = glm::ortho(0.0f, EngineCore::GetInstance()->GetScreenWidth(), 0.0f, EngineCore::GetInstance()->GetScreenHeight(), -1.0f, 1.0f);
 
 	UpdateCameraVector();
+	//frustum.CalculateFrustum();
 }
 
 Camera::~Camera()
@@ -26,6 +27,7 @@ void Camera::SetPosition(glm::vec3 pos)
 {
 	position = pos;
 	UpdateCameraVector();
+	//frustum.CalculateFrustum();
 }
 
 void Camera::SetRotation(float yaw, float pitch)
@@ -33,6 +35,7 @@ void Camera::SetRotation(float yaw, float pitch)
 	this->yaw = yaw;
 	this->pitch = pitch;
 	UpdateCameraVector();
+	//frustum.CalculateFrustum();
 }
 
 void Camera::AddLightSource(LightSource* light)
@@ -72,6 +75,16 @@ glm::mat4 Camera::GetOrtho() const
 glm::vec3 Camera::GetPosition() const
 {
 	return position;
+}
+
+float Camera::GetNearPlane() const
+{
+	return nearPlane;
+}
+
+float Camera::GetFarPlane() const
+{
+	return farPlane;
 }
 
 void Camera::ProcessMouseMovement(glm::vec2 offset)
@@ -114,4 +127,5 @@ void Camera::UpdateCameraVector()
 	up = glm::normalize(glm::cross(right, forward));
 
 	view = glm::lookAt(position, position + forward, up);
+	//frustum.CalculateFrustum();
 }

@@ -24,12 +24,16 @@ public:
 	glm::mat4 GetPerspective() const;
 	glm::mat4 GetOrtho() const;
 	glm::vec3 GetPosition() const;
+	float GetNearPlane() const;
+	float GetFarPlane() const;
 
 	void ProcessMouseMovement(glm::vec2 offset);
 	void ProcessMouseZoom(int y);
 private:
 
+
 	void UpdateCameraVector();
+
 	glm::vec3 position;
 	glm::mat4 perspective, orthographic, view;
 	float fov;

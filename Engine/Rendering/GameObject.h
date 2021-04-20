@@ -23,6 +23,7 @@ BoundingBox	GetBoundingBox() const;
 	void SetScale(glm::vec3 scale_);
 	void SetAngle(float angle_);
 	void SetID(std::string ID_);
+	void SetHit(bool hit, int buttonType);
 
 private:
 	Model* model;
@@ -33,5 +34,6 @@ private:
 	float angle;
 	std::string ID;
 	BoundingBox boundingBox;
+	bool hit;
 };
 #endif

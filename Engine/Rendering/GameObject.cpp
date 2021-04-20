@@ -4,6 +4,7 @@ GameObject::GameObject(Model* m, glm::vec3 position_) : model(nullptr), position
 {
 	model = m;
 	position = position_;
+	hit = false;
 	if (model) {
 		modelInstance = model->CreateInstance(position, angle, rotation, scale);
 		boundingBox = model->GetBoundingBox();
@@ -66,6 +67,7 @@ void GameObject::SetPosition(glm::vec3 pos)
 	if (model != nullptr) {
 		 model->UpdateInstance(modelInstance, position, angle, rotation, scale);
 		 boundingBox.transform = model->GetTransform(modelInstance);
+	
 	}
 }
 
@@ -75,6 +77,7 @@ void GameObject::SetRotation(glm::vec3 rot)
 	if (model != nullptr) {
 		model->UpdateInstance(modelInstance, position, angle, rotation, scale);
 		boundingBox.transform = model->GetTransform(modelInstance);
+		
 	}
 }
 
@@ -86,6 +89,7 @@ void GameObject::SetScale(glm::vec3 scale_)
 		boundingBox.transform = model->GetTransform(modelInstance);
 		boundingBox.minVert *= scale.x > 1.0f ? scale : (scale / 2.0f);
 		boundingBox.maxVert *= scale.x > 1.0f ? scale : (scale / 2.0f);
+		
 	}
 }
 
@@ -95,10 +99,19 @@ void GameObject::SetAngle(float angle_)
 	if (model != nullptr) {
 		model->UpdateInstance(modelInstance, position, angle, rotation, scale);
 		boundingBox.transform = model->GetTransform(modelInstance);
+		
 	}
 }
 
 void GameObject::SetID(std::string ID_)
 {
 	ID = ID_;
+}
+
+void GameObject::SetHit(bool hit_, int buttonType)
+{
+	hit = hit_;
+	if (hit) {
+		std::cout << ID << "Was hit" << std::endl;
+	}
 }

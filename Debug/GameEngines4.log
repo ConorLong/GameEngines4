@@ -1,4 +1,5 @@
-﻿  LoadOBJModel.cpp
-C:\Users\Conor\source\repos\GameEngines4\GameEngines4\Engine\Rendering\LoadOBJModel.cpp(111,22): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Conor\source\repos\GameEngines4\GameEngines4\Engine\Rendering\LoadOBJModel.cpp(103,16): warning C4101: 'z': unreferenced local variable
+﻿  CollisionDetection.cpp
+  Model.cpp
+C:\Users\Conor\source\repos\GameEngines4\GameEngines4\Engine\Rendering\Model.cpp(82,20): warning C4018: '<': signed/unsigned mismatch
+  Generating Code...
   GameEngines4.vcxproj -> C:\Users\Conor\source\repos\GameEngines4\Debug\GameEngines4.exe

@@ -3,10 +3,13 @@
 
 #include<glm/glm.hpp>
 #include<glm/gtx/string_cast.hpp>
+
 struct BoundingBox
 {
+	
 	glm::vec3 maxVert, minVert;
 	glm::mat4 transform;
+	glm::vec3 points[4];
 
 	inline BoundingBox() 
 	{
@@ -20,5 +23,6 @@ struct BoundingBox
 		minVert = minVert_;
 		transform = transform_;
 	}
+
 };
 #endif

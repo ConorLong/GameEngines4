@@ -72,6 +72,7 @@ void SceneGraph::AddGameObject(GameObject* go, std::string ID_)
         go->SetID(newID);
         sceneGameObjects[newID] = go;
     }
+    CollisionHandler::GetInstance()->AddObject(go);
 }
 
 GameObject* SceneGraph::GetGameObject(std::string ID_) const

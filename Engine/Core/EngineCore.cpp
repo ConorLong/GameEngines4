@@ -37,6 +37,7 @@ EngineCore::~EngineCore()
 
  void EngineCore::NotifyOfMouseRelease(glm::ivec2 mouse_, int buttontype)
  {
+	 CollisionHandler::GetInstance()->MouseUpdate(mouse_, buttontype);
  }
 
  void EngineCore::NotifyOfMouseMove(glm::ivec2 mouse_)
@@ -158,7 +159,7 @@ void EngineCore::OnDestroy()
 	TextureHandler::GetInstance()->OnDestroy();
 	SceneGraph::GetInstance()->OnDestroy();
 	MaterialHandler::GetInstance()->OnDestroy();
-
+	CollisionHandler::GetInstance()->OnDestroy();
 
 	delete gInterface;
 	gInterface = nullptr;
