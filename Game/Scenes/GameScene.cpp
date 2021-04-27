@@ -23,7 +23,7 @@ bool GameScene::OnCreate()
 	//EngineCore::GetInstance()->GetCamera()->AddLightSource(light2);
 
 	EngineCore::GetInstance()->GetCamera()->SetPosition(glm::vec3(0.0f, 0.0f, 10.0f));
-
+	CollisionHandler::GetInstance()->OnCreate(100.0f);
 #pragma region Textures
 	TextureHandler::GetInstance()->CreateTexture("RAMTexture", "./Resources/Images/RAM.jpg");
 	TextureHandler::GetInstance()->CreateTexture("Alive1997Texture", "./Resources/Images/Alive1997.jpg");
@@ -40,7 +40,7 @@ bool GameScene::OnCreate()
 	SceneGraph::GetInstance()->AddModel(appleModel);
 
 	SceneGraph::GetInstance()->AddGameObject(new GameObject(diceModel, glm::vec3(-2.0f, 0.0f, -2.0f)), "Die");
-	SceneGraph::GetInstance()->AddGameObject(new GameObject(appleModel, glm::vec3(3.0f, 0.0f, 0.0f)), "Apple");
+	SceneGraph::GetInstance()->AddGameObject(new GameObject(appleModel, glm::vec3(10.0f, 0.0f, 0.0f)), "Apple");
 
 	diceModel = nullptr;
 	appleModel = nullptr;

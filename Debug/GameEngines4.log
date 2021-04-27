@@ -1,5 +1,25 @@
-﻿  CollisionDetection.cpp
+﻿  CollisionHandler.cpp
+  CollisionDetection.cpp
+  Camera.cpp
+  EngineCore.cpp
+  GameObject.cpp
+  EventListener.cpp
+  Frustum.cpp
+  GameScene.cpp
+  Game1.cpp
+  LoadOBJModel.cpp
+C:\Users\Conor\source\repos\GameEngines4\GameEngines4\Engine\Rendering\LoadOBJModel.cpp(111,22): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Conor\source\repos\GameEngines4\GameEngines4\Engine\Rendering\LoadOBJModel.cpp(103,16): warning C4101: 'z': unreferenced local variable
+  Main.cpp
+  StartScene.cpp
+  Mesh.cpp
+C:\Users\Conor\source\repos\GameEngines4\GameEngines4\Engine\Rendering\Mesh.cpp(54,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Conor\source\repos\GameEngines4\GameEngines4\Engine\Rendering\Mesh.cpp(66,21): warning C4018: '<': signed/unsigned mismatch
   Model.cpp
 C:\Users\Conor\source\repos\GameEngines4\GameEngines4\Engine\Rendering\Model.cpp(82,20): warning C4018: '<': signed/unsigned mismatch
+  SceneGraph.cpp
+  MouseEventListener.cpp
+  Ray.cpp
+  OctSpatialPartition.cpp
   Generating Code...
   GameEngines4.vcxproj -> C:\Users\Conor\source\repos\GameEngines4\Debug\GameEngines4.exe

@@ -1,5 +1,5 @@
 #include "Model.h"
-
+#include "Frustum.h"
 
 Model::Model(GLuint shaderProgram_, const std::string& objPath, const std::string matPath): meshes(std::vector<Mesh*>()), shaderProgram(0), modelInstances(std::vector<glm::mat4>())
 {
@@ -24,16 +24,16 @@ Model::~Model()
 
 void Model::Render(Camera* camera)
 {
-	//if (camera->frustum.CheckBox(boundingBox)) {
+	if (camera->GetFrustum().CheckBox(boundingBox)) {
 		glUseProgram(shaderProgram);
 		for (auto m : meshes) {
 			m->Render(camera, modelInstances);
 		}
-	
-	//}
-//	else {
-	//	std::cout << "NOT RENDERED" << std::endl;
-	//}
+		//std::cout <<" RENDERED" << std::endl;
+	}
+else {
+		//std::cout << " NOT RENDERED" << std::endl;
+	}
 
 }
 

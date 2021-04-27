@@ -5,7 +5,7 @@ int main(int argc, char* argv[])
 {
 	EngineCore::GetInstance()->SetGameInterface(new Game1());
 
-	if (!EngineCore::GetInstance()->OnCreate("engine", 800, 600)) {
+	if (!EngineCore::GetInstance()->OnCreate("engine", 800, 800)) {
 		std::cout << "engine failed to init" << std::endl;
 		return 0;
 	}

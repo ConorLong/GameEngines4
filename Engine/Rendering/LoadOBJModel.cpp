@@ -10,8 +10,8 @@ LoadOBJModel::LoadOBJModel() : vertices(std::vector<glm::vec3>()), normals(std::
 	meshVertices.reserve(200);
 	subMeshes.reserve(10);
 
-	boundingBox.minVert = glm::vec3(0.0f);
-	boundingBox.maxVert = glm::vec3(0.0f);
+	boundingBox.minVert = glm::vec3(10000);
+	boundingBox.maxVert = glm::vec3(-10000);
 }
 
 LoadOBJModel::~LoadOBJModel() {

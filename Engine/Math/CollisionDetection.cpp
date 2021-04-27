@@ -16,7 +16,7 @@ Ray CollisionDetection::MousePosToWorldRay(glm::vec2 mouseCoords, glm::vec2 scre
 	glm::vec4 rayStartWorld = inverse * rayStartNDC;
 	rayStartWorld /= rayStartWorld.w;
 
-	glm::vec4 rayEndWorld = inverse * rayStartNDC;
+	glm::vec4 rayEndWorld = inverse * rayEndNDC;
 	rayEndWorld /= rayEndWorld.w;
 
 	glm::vec3 rayDirWorld(rayEndWorld - rayStartWorld);
@@ -71,6 +71,9 @@ bool CollisionDetection::RayObbIntersection(Ray* ray, BoundingBox* box)
 		}
 	}
 
+	glm::vec3 yAxis(modelMatrix[1].x, modelMatrix[1].y, modelMatrix[1].z);
+	dotDelta = glm::dot(yAxis, delta);
+	dotDir = glm::dot(rayDirection, yAxis);
 
 	if (fabs(dotDir) > 0.001f) {
 		float t1 = (dotDelta + boxMin.y) / dotDir;
@@ -100,6 +103,10 @@ bool CollisionDetection::RayObbIntersection(Ray* ray, BoundingBox* box)
 		}
 	}
 
+	glm::vec3 zAxis(modelMatrix[2].x, modelMatrix[2].y, modelMatrix[2].z);
+	dotDelta = glm::dot(zAxis, delta);
+	dotDir = glm::dot(rayDirection, zAxis);
+
 	if (fabs(dotDir) > 0.001f) {
 		float t1 = (dotDelta + boxMin.z) / dotDir;
 		float t2 = (dotDelta + boxMax.z) / dotDir;
@@ -127,7 +134,6 @@ bool CollisionDetection::RayObbIntersection(Ray* ray, BoundingBox* box)
 			return false;
 		}
 	}
-	std::cout << "collision detected from mouse ray" << std::endl;
 	ray->intersectionDist = tMin;
 	return true;
 }

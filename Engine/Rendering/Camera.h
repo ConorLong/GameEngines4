@@ -6,6 +6,8 @@
 #include<vector>
 
 #include "../FX/LightSource.h"
+
+class Frustum;
 class Camera
 {
 public:
@@ -24,14 +26,22 @@ public:
 	glm::mat4 GetPerspective() const;
 	glm::mat4 GetOrtho() const;
 	glm::vec3 GetPosition() const;
+	glm::vec3 GetForward() const;
+	glm::vec3 GetUp() const;
+	glm::vec3 GetRight() const;
+	Frustum GetFrustum() const;
+
+	float GetFOV() const;
 	float GetNearPlane() const;
 	float GetFarPlane() const;
 
 	void ProcessMouseMovement(glm::vec2 offset);
 	void ProcessMouseZoom(int y);
+
 private:
 
 
+	Frustum* frustum;
 	void UpdateCameraVector();
 
 	glm::vec3 position;
@@ -40,7 +50,6 @@ private:
 	float yaw, pitch;
 	float nearPlane, farPlane;
 	glm::vec3 forward, up, right, worldUp;
-
 	std::vector<LightSource*> lights;
 };
 #endif

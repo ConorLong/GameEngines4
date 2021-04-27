@@ -112,6 +112,6 @@ void GameObject::SetHit(bool hit_, int buttonType)
 {
 	hit = hit_;
 	if (hit) {
-		std::cout << ID << "Was hit" << std::endl;
+		std::cout << ID << " Was hit" << std::endl;
 	}
 }
