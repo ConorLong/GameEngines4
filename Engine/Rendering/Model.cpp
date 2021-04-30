@@ -24,17 +24,10 @@ Model::~Model()
 
 void Model::Render(Camera* camera)
 {
-	if (camera->GetFrustum().CheckBox(boundingBox)) {
 		glUseProgram(shaderProgram);
 		for (auto m : meshes) {
 			m->Render(camera, modelInstances);
 		}
-		//std::cout <<" RENDERED" << std::endl;
-	}
-else {
-		//std::cout << " NOT RENDERED" << std::endl;
-	}
-
 }
 
 void Model::AddMesh(Mesh* mesh)

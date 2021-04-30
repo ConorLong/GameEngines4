@@ -60,7 +60,6 @@ bool Frustum::CheckBox(BoundingBox &box)
 		glm::vec3 max = box.OrientMax(p[i].normal);
 
 		float tmp = p[i].SignedDistance(min);
-		std::cout << tmp << std::endl;
 		if (tmp < 0) {
 			return false;
 		}

@@ -45,6 +45,27 @@ void OctNode::Octify(int depth)
 		children[static_cast<int>(OctChildren::OCT_TLF)] = new OctNode(
 			glm::vec3(octBounds->minVert.x, octBounds->minVert.y + half, octBounds->minVert.z + half), half, this);
 
+		children[static_cast<int>(OctChildren::OCT_BLF)] = new OctNode(
+			glm::vec3(octBounds->minVert.x, octBounds->minVert.y, octBounds->minVert.z + half), half, this);
+
+		children[static_cast<int>(OctChildren::OCT_BRF)] = new OctNode(
+			glm::vec3(octBounds->minVert.x + half, octBounds->minVert.y, octBounds->minVert.z + half), half, this);
+
+		children[static_cast<int>(OctChildren::OCT_TRF)] = new OctNode(
+			glm::vec3(octBounds->minVert.x + half, octBounds->minVert.y + half, octBounds->minVert.z + half), half, this);
+
+		children[static_cast<int>(OctChildren::OCT_TLR)] = new OctNode(
+			glm::vec3(octBounds->minVert.x, octBounds->minVert.y + half, octBounds->minVert.z), half, this);
+
+		children[static_cast<int>(OctChildren::OCT_BLR)] = new OctNode(
+			glm::vec3(octBounds->minVert.x, octBounds->minVert.y, octBounds->minVert.z), half, this);
+
+		children[static_cast<int>(OctChildren::OCT_BRR)] = new OctNode(
+			glm::vec3(octBounds->minVert.x + half, octBounds->minVert.y, octBounds->minVert.z), half, this);
+
+		children[static_cast<int>(OctChildren::OCT_TRR)] = new OctNode(
+			glm::vec3(octBounds->minVert.x + half, octBounds->minVert.y + half, octBounds->minVert.z), half, this);
+
 		childNum += 8;
 	}
 
@@ -149,8 +170,31 @@ GameObject* OctSpatialPartition::GetCollision(Ray ray)
 
 void OctSpatialPartition::AddObjectToCell(OctNode* cell, GameObject* obj)
 {
+	if (cell->IsLeaf()) {
+		if (obj->GetBoundingBox().Intersects(cell->GetBoundingBox())) {
+			cell->AddCollisionObject(obj);
+			std::cout << obj->GetID() << " added to " << cell->GetBoundingBox()->minVert.x << ", " << cell->GetBoundingBox()->minVert.x << ", " << cell->GetBoundingBox()->minVert.z << std::endl;
+		}
+	}
+	if(!cell->IsLeaf()){
+		for (int i = 0; i < CHILDREN_NUMBER; i++) {
+			
+			AddObjectToCell(cell->GetChild(static_cast<OctChildren>(i)), obj);
+		}
+	}
 }
 
 void OctSpatialPartition::PrepareCollisionQuery(OctNode* cell, Ray ray)
 {
+	if (cell->IsLeaf()) {
+		if(ray.IsColliding(cell->GetBoundingBox())) {
+			rayIntersectionList.push_back(cell);
+		}
+	}
+	else {
+		for (int i = 0; i < CHILDREN_NUMBER; i++) {
+
+			PrepareCollisionQuery(cell->GetChild(static_cast<OctChildren>(i)), ray);
+		}
+	}
 }
